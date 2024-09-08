@@ -12,4 +12,4 @@ Nova is an new project from mine to AI lovers. AI now run in your terminal, but 
 ### Step - 04 
  ```python3 app.py ```
 ### Step - 05 
-Be happy! 
+```Be happy! ```

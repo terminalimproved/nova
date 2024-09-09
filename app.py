@@ -18,8 +18,9 @@ title = """
 print(title)
 print("""
 01 - Sailboat | A Powerful image generator      
-02 - Opus | An AI text agent ready to generate text for you.      
-03 - Type 'exit' to end the chat.
+02 - Opus | An AI text agent ready to generate text for you.
+03 - Floyd | An AI music generator
+04 - Type 'exit' to end the chat.
 """)
 
 # Function to display loading animation
@@ -101,14 +102,52 @@ def Opus():
         loading_thread.join()
         print(f"\nError occurred: {e}")
 
+def Floyd():
+    headers = {
+        'Authorization': 'Bearer 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',
+        'Content-Type': 'application/json'
+    }
+    prompt = input('Enter your music prompt: ')
+    data = json.dumps({'inputs': prompt})
+    
+    stop_event = threading.Event()
+    loading_thread = threading.Thread(target=loading_animation, args=(stop_event,))
+    loading_thread.start()
+
+    try:
+        response = requests.post('https://api-inference.huggingface.co/models/facebook/musicgen-small',
+                                 headers=headers, data=data)
+        
+        stop_event.set()
+        loading_thread.join()
+
+        if response.status_code == 200:
+            try:
+                audio = BytesIO(response.content)
+                filename = f"{prompt}.wav"
+                with open(filename, 'wb') as f:
+                    f.write(audio.getbuffer())
+                print(f'\nMusic saved as {filename}')
+            except Exception as e:
+                print("\nFailed to process music:", e)
+        else:
+            print(f'\nError: {response.status_code} - {response.text}')
+    except Exception as e:
+        stop_event.set()
+        loading_thread.join()
+        print(f"\nError occurred: {e}")
+
+
 # Main chat loop
 while True:
-    useranswer = input("\nChoose an option (01 for Sailboat, 02 for Opus, or 'exit' to quit): ")
+    useranswer = input("\nChoose an option (01 for Sailboat, 02 for Opus, 03 for Floyd, or 'exit' to quit): ")
     
     if useranswer == "01":
         Sailboat()
     elif useranswer == "02":
         Opus()
+    elif useranswer == "03":
+        Floyd()
     elif useranswer.lower() == "exit":
         print("Goodbye!")
         break

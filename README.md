@@ -10,6 +10,6 @@ Nova is an new project from mine to AI lovers. AI now run in your terminal, but 
 ### Step - 03 
  ```pip install -r requirements.txt ```
 ### Step - 04 
- ```python3 app.py ```
+ ```python3 nova.py ```
 ### Step - 05 
 ```Be happy! ```
